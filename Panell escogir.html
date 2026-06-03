@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>IMPOSTOR</title>
+  <link rel="stylesheet" href="style.css">
+    <link
+            rel="stylesheet"
+            href="https://pyscript.net/releases/2026.2.1/core.css"
+        />
+        <script
+            type="module"
+            src="https://pyscript.net/releases/2026.2.1/core.js"
+        ></script>
+
+</head>
+
+<body>
+<p id="jugadors" style="text-align:center"></p>
+<p>
+  <center>
+<h3 class="novè-boto" id="n_jugadors" mpy-click="jugadors_py">
+  Afegir jugador
+</h3>
+  </center>
+</p>
+ <center>IMPOSTORS</center>
+     
+ <center><p id="num_jugadors"> 0 </p> </center>    
+      <center>  <button mpy-click="menys_un_jugador"  class="dotze-boto">-</button> 
+<button mpy-click="mes_un_jugador" class="dotze-boto">+</button>  </center>
+ <center>PISTA</center>
+ <center>    
+    <p id="pistes"></p>  
+ <button mpy-click="calcul_amb_pista" class="dotze-boto">Sí</button>    
+ <button mpy-click="calcul_sense_pista" class="dotze-boto">No</button></center>    
+
+        <script type="mpy">
+            from pyscript import display
+            import js
+            import json
+            import random 
+
+            #variables globals
+            noms_jugadors=[]
+            jugadors = 1
+            impostors = 0
+            pistes = 0
+            
+
+            
+            def calcul_amb_pista(event):
+                s = f"tens pista"
+                global pistes
+                pistes = 1
+                display(s, target="pistes", append=False)  
+
+            
+            def calcul_sense_pista(event):
+                s = f"no tens pista"
+                global pistes
+                pistes = 0
+                display(s, target="pistes", append=False)
+            
+            def menys_un_jugador(event):
+                global impostors, jugadors
+                if impostors> 0:
+                 impostors = impostors - 1
+                s = f"{impostors}"
+                display(s, target="num_jugadors", append=False) 
+
+            def mes_un_jugador(event):
+                global impostors
+                impostors= impostors + 1
+                s = f"{impostors}"
+                display(s, target="num_jugadors", append=False)
+                
+
+            def jugadors_py(event):
+                global noms_jugadors
+                
+                nom = js.prompt("Quin és el nom del jugador?")
+                noms_jugadors.append(nom)
+                display(f"{nom}", target="jugadors", append=True)
+            
+            def guardar(event):
+                global noms_jugadors, ipostors, pistes
+                js.sessionStorage.setItem("noms_jugadors", json.dumps(noms_jugadors))
+                js.sessionStorage.setItem("impostors", str(impostors))
+                js.sessionStorage.setItem("pistes", str(pistes))
+                js.window.location.href = "jugador.html"
+
+            def carregar():
+                if (js.sessionStorage.getItem("noms_jugadors") is not None):
+                    noms_jugadors = json.loads(js.sessionStorage.getItem("noms_jugadors"))
+                    impostors = int(js.sessionStorage.getItem("impostors"))
+                    pistes = int(js.sessionStorage.getItem("pistes" ))
+
+            def pinta_camps():
+                global noms_jugadors, impostors, pistes
+                for nom in noms_jugadors:
+                    display(f"{nom}", target="jugadors", append=True)
+                display(f"{impostors}", target="num_jugadors", append=False)
+                if(pistes == 0):
+                    display("no tens pista", target="pistes", append=False) 
+                else:
+                    display("no tens pista", target="pistes", append=False) 
+            
+            #inici pagina
+            carregar()
+
+            pinta_camps()
+                
+                
+                
+                
+
+
+
+            
+        </script>
+
+  <center>
+  <button mpy-click="guardar" class="primer-boto"> CONTINUAR</button>
+</center>
+
+
+
+</body>
+</html>

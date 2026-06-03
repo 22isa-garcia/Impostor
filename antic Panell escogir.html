@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>IMPOSTOR</title>
+  <link rel="stylesheet" href="style.css">
+    <link
+            rel="stylesheet"
+            href="https://pyscript.net/releases/2026.2.1/core.css"
+        />
+        <script
+            type="module"
+            src="https://pyscript.net/releases/2026.2.1/core.js"
+        ></script>
+</head>
+
+<body>
+
+ <center>Jugador 1</center>
+ <center>Jugador 2</center>
+<p>
+  <center>
+<h3 class="novè-boto" id="n_jugadors" mpy-click="jugadors_py">
+  Afegir jugador
+</h3>
+  </center>
+</p>
+ <center>IMPOSTORS</center>
+     
+ <center><p id="num_jugadors"> 1 </p> </center>    
+      <center>  <button mpy-click="menys_un_jugador"  class="dotze-boto">-</button> 
+<button mpy-click="mes_un_jugador" class="dotze-boto">+</button>  </center>
+ <center>PISTA</center>
+ <center>     
+ <button mpy-click="calcul_amb_pista" class="dotze-boto">Sí</button>    
+ <button mpy-click="calcul_sense_pista" class="dotze-boto">No</button></center>    
+
+        <script type="mpy">
+            from pyscript import display
+
+            def wallis(n):
+                pi = 2
+                for i in range(1, n):
+                    pi *= 4 * i ** 2 / (4 * i ** 2 - 1)
+                return pi
+            
+            def calcul_amb_pista(event):
+                s = f"tens pista"
+                display(s, target="num_jugadors", append=False)  
+
+            
+            def calcul_sense_pista(event):
+                s = f"no tens pista"
+                display(s, target="num_jugadors", append=False)
+            
+            def menys_un_jugador(event):
+                s = f"n_impostors-1"
+                display(s, target="num_jugadors", append=False) 
+
+            def mes_un_jugador(event):
+                s = f"n_impostors+1"
+                display(s, target="num_jugadors", append=False)
+                
+
+            def jugadors_py(event):
+                s = f"jugador_n"
+                display(s, target="n_jugadors", append=False)
+
+
+            
+        </script>
+
+
+     
+ <center> <a href="jugador.html" class="quart-boto">CONTINUA </a>  </center>
+
+
+</body>
+</html>

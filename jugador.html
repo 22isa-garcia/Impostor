@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>IMPOSTOR</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://pyscript.net/releases/2026.2.1/core.css"/>
+  <script type="module" src="https://pyscript.net/releases/2026.2.1/core.js"></script>
+</head>
+
+<body>
+  <br>
+  <br>
+  <center><h1 id="nom_jugador_pantalla"></h1></center>
+  <center>
+    <button mpy-click="mostra" class="cinque-boto"> MOSTRA </button>
+  </center>
+    
+  <script type="mpy">
+    import js
+    import json
+    from pyscript import document
+
+    def carregar_torn():
+
+        torn_guardat = js.sessionStorage.getItem("torn_actual")
+        if torn_guardat is None:
+            torn = 0
+            js.sessionStorage.setItem("torn_actual", "0")
+        else:
+            torn = int(torn_guardat)
+
+        dades_partida = json.loads(js.sessionStorage.getItem("dades_partida"))
+        nom_jugador = dades_partida[torn]["nom"] 
+        document.getElementById("nom_jugador_pantalla").innerText = f"Torn de: {nom_jugador}" 
+    def mostra(event):
+
+        js.window.location.href = "mostra_rol.html"
+
+    carregar_torn()
+  </script>
+</body>
+</html>

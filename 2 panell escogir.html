@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>IMPOSTOR</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://pyscript.net/releases/2026.2.1/core.css" />
+  <script type="module" src="https://pyscript.net/releases/2026.2.1/core.js"></script>
+</head>
+
+<body>
+  <p id="jugadors" style="text-align:center"></p>
+  <p>
+    <center>
+      <h3 class="novè-boto" id="n_jugadors" mpy-click="jugadors_py">
+        Afegir jugador
+      </h3>
+    </center>
+  </p>
+  <center>IMPOSTORS</center>
+  <center><p id="num_jugadors"> 0 </p></center>    
+  <center>  
+    <button mpy-click="menys_un_jugador" class="dotze-boto">-</button> 
+    <button mpy-click="mes_un_jugador" class="dotze-boto">+</button>  
+  </center>
+  <center>PISTA</center>
+  <center>   
+    <p id="pistes"></p>  
+    <button mpy-click="calcul_amb_pista" class="dotze-boto">Sí</button>   
+    <button mpy-click="calcul_sense_pista" class="dotze-boto">No</button>
+  </center> 
+  <center>  
+    <button mpy-click="guardar" class="primer-boto"> CONTINUAR</button>
+  </center>
+
+  <script type="mpy">
+    from pyscript import document
+    import js
+    import json
+    import random
+
+    # variables globals
+    noms_jugadors = []
+    jugadors = 1
+    impostors = 0
+    pistes = 0
+
+    def calcul_amb_pista(event):
+        global pistes
+        pistes = 1
+        document.getElementById("pistes").innerText = "tens pista"  
+
+    def calcul_sense_pista(event):
+        global pistes
+        pistes = 0
+        document.getElementById("pistes").innerText = "no tens pista"  
+
+    def menys_un_jugador(event):
+        global impostors
+        if impostors > 0:
+            impostors = impostors - 1                            
+        document.getElementById("num_jugadors").innerText = str(impostors)
+
+    def mes_un_jugador(event):
+        global impostors
+        if impostors < len(noms_jugadors):
+            impostors = impostors + 1
+        document.getElementById("num_jugadors").innerText = str(impostors)
+
+    def jugadors_py(event):
+        global noms_jugadors
+        nom = js.prompt("Quin és el nom del jugador?")
+        if nom:
+            nom = str(nom)
+            noms_jugadors.append(nom)
+            document.getElementById("jugadors").innerHTML += f"{nom}<br>"
+
+    def guardar(event):
+        global noms_jugadors, impostors, pistes
+        if len(noms_jugadors) == 0:
+            js.alert("Has d'afegir almenys un jugador!") 
+            return
+        if impostors == 0:
+            js.alert("Has d'afegir almenys un impostor!")  
+            return
+            
+        diccionari_joc = [
+            {"paraula": "bastó", "pista": "avi"},                  
+            {"paraula": "vaixell", "pista": "brúixola"},                        
+            {"paraula": "hospital", "pista": "creu"},                         
+            {"paraula": "pizza", "pista": "formatge"},                         
+            {"paraula": "gimnàs", "pista": "tovallola"},
+            {"paraula": "paper", "pista": "avió"},
+            {"paraula": "poma", "pista": "cuc"},
+            {"paraula": "diners", "pista": "porc"},
+            {"paraula": "banc", "pista": "peix"},
+            {"paraula": "cua", "pista": "torn"},
+            {"paraula": "cargol", "pista": "construcció"},
+            {"paraula": "carta", "pista": "menjar"},
+            {"paraula": "corda", "pista": "guitarra"},
+            {"paraula": "nou", "pista": "comprar"},
+            {"paraula": "sol", "pista": "música"},
+
+
+        ]
+        paraula_partida = random.choice(diccionari_joc)
+        pista_partida = paraula_partida["paraula"]
+        
+        if pistes == 1:
+            pista_impostor = paraula_partida["pista"]
+        else:
+            pista_impostor = "No tens pista! Sort!"
+            
+        total_jugadors = len(noms_jugadors)
+        lista_rols = ["Impostor"] * impostors + ["No impostor"] * (total_jugadors - impostors)
+        for i in  range(len(lista_rols) -1, 0, -1):
+           j= random.randint(0,i)
+           lista_rols[i], lista_rols[j] = lista_rols[j],lista_rols[i]
+        
+        dades_partida = []
+        for i in range(total_jugadors):
+            nom = noms_jugadors[i]
+            rol = lista_rols[i]
+            if rol == "No impostor":
+                text_mostrat = pista_partida
+            else:
+                text_mostrat = pista_impostor
+            dades_partida.append({
+                "nom": nom,
+                "rol": rol, 
+                "text": text_mostrat
+            })
+            
+        js.sessionStorage.setItem("dades_partida", json.dumps(dades_partida))
+        js.sessionStorage.setItem("noms_jugadors", json.dumps(noms_jugadors))
+        js.sessionStorage.setItem("impostors", str(impostors))
+        js.sessionStorage.setItem("pistes", str(pistes))
+
+
+        js.window.location.href = "jugador.html"
+
+    def carregar():
+        global noms_jugadors, impostors, pistes   
+        noms_guardats = js.sessionStorage.getItem("noms_jugadors")
+        impostors_guardats = js.sessionStorage.getItem("impostors")
+        pistes_guardades = js.sessionStorage.getItem("pistes")
+
+        if noms_guardats:
+            noms_jugadors = json.loads(str(noms_guardats))
+        if impostors_guardats:
+            impostors = int(str(impostors_guardats))
+        if pistes_guardades:
+            pistes = int(str(pistes_guardades))
+
+    def pinta_camps():
+        global noms_jugadors, impostors, pistes
+        document.getElementById("jugadors").innerHTML = ""
+        for nom in noms_jugadors:
+            document.getElementById("jugadors").innerHTML += f"{nom}<br>"
+        document.getElementById("num_jugadors").innerText = str(impostors)
+        
+        if pistes == 0:
+            document.getElementById("pistes").innerText = "no tens pista"
+        else:
+            document.getElementById("pistes").innerText = "tens pista"            
+
+
+    carregar()
+    pinta_camps()
+  </script>
+</body>
+</html>
+
+
+</body>
+</html>

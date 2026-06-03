@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>IMPOSTOR</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://pyscript.net/releases/2026.2.1/core.css" />
+  <script type="module" src="https://pyscript.net/releases/2026.2.1/core.js"></script>
+</head>
+
+<body>
+ <center><h1>L'Impostor era...</h1></center>
+ <center><h3 id="impostor"></h3></center>
+ <center><h1>La paraula era...</h1></center>   
+ <center><h3 id="paraula_partida"></h3></center>
+
+ <center> <button mpy-click="reiniciar_joc" class="vuitè-boto">Torna a jugar</button></center>
+ <script type="mpy">
+    from pyscript import document
+    import js
+    import json
+
+
+    def revelar_resultats():
+       dades_guardades= js.sessionStorage.getItem("dades_partida")
+       if dades_guardades:
+         dades_partida= json.loads(str(dades_guardades))
+         noms_impostors= []
+         paraula= ""
+
+         for jugador in dades_partida:
+           if jugador["rol"] =="Impostor":
+             noms_impostors.append(jugador["nom"])
+           elif jugador["rol"]  == "No impostor":
+             paraula= jugador["text"]
+         text_impostors = ", ".join(noms_impostors)
+         document.getElementById("impostor").innerText = text_impostors
+         document.getElementById("paraula_partida").innerText = paraula
+
+    def reiniciar_joc(event):
+      js.sessionStorage.clear()
+      js.window.location.href = "2 panell escogir.html"
+     
+    revelar_resultats()
+ </script>
+
+
+</body>
+
+</html>
